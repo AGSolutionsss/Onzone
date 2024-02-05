@@ -9,11 +9,6 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import {baseURL} from '../../api';
 import MenuItem from "@material-ui/core/MenuItem";
-import { IconButton } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Select from 'react-select';
-import Selectdonor from "./selectdonor";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 const Add = (props) => {
 
@@ -51,43 +46,13 @@ const Add = (props) => {
         fabric_inward_count: "",
         fabric_inward_invoice: "",
         fabric_inward_width: "",
-        fabric_inward_brand: ""
+        fabric_inward_brand: "",
+        uploaded_file: "",
     });
 
+    const [selectedFile, setSelectedFile] = React.useState(null);
+
     const [fabric_inward_count, setCount] = useState(1);
-
-    const [showmodal, setShowmodal] = useState(false);
-    const closegroupModal = () => {
-      setShowmodal(false);
-    };
-
-    const openmodal = () => {
-      setShowmodal(true);
-    };
-    
-    const useTemplate = {fabric_inward_sub_name:"",  fabric_inward_sub_color:"",fabric_inward_sub_design:"",fabric_inward_sub_type:"",fabric_inward_sub_color_theme:"", fabric_inward_sub_occasion:"",fabric_inward_sub_other:"", fabric_inward_sub_length:"", fabric_inward_sub_rate: "", fabric_inward_sub_shrinkage:""};
-    //TODO:change variable name to somethig meaningfull
-    const [users, setUsers] = useState([useTemplate]);
-
-    const addItem = () => {
-      setUsers([...users,useTemplate]);
-      setCount(fabric_inward_count + 1);
-    }
-    //TODO::change onChange to onItemChange 
-    const onChange = (e, index) =>{
-      const updatedUsers = users.map((user, i) => 
-      index == i 
-      ? Object.assign(user,{[e.target.name]: e.target.value}) 
-      : user );
-      setUsers(updatedUsers);
-    };
-
-    const removeUser = (index) => {
-      const filteredUsers = [...users];
-      filteredUsers.splice(index, 1);
-      setUsers(filteredUsers);
-      setCount(fabric_inward_count - 1);
-    }
 
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
@@ -99,37 +64,9 @@ const Add = (props) => {
         return false;
       }
     }
-    const [activeProductIndex,setActiveProductIndex] = useState(0);
-    const populateCoreName = (selectedProduct) => {
-      const tempUsers = [...users];
-      tempUsers[activeProductIndex].fabric_inward_sub_name = selectedProduct.core_items_name;
-      
-      tempUsers[activeProductIndex].fabric_inward_sub_color = selectedProduct.core_items_attr_color;
-      tempUsers[activeProductIndex].fabric_inward_sub_design = selectedProduct.core_items_attr_design;
-      tempUsers[activeProductIndex].fabric_inward_sub_type = selectedProduct.core_items_attr_type;
-      tempUsers[activeProductIndex].fabric_inward_sub_color_theme = selectedProduct.core_items_attr_color_theme;
-      tempUsers[activeProductIndex].fabric_inward_sub_occasion = selectedProduct.core_items_attr_occasion;
-      tempUsers[activeProductIndex].fabric_inward_sub_rate = selectedProduct.core_items_rate;
-      
-      setUsers(tempUsers);
-      setShowmodal(false);
-    }
     
-    const [types, setType] = useState([]);
-    const setActiveDesignIndex = (e, index) => {
-      console.log('debug',e.target.value);
-      console.log('debug1',index);
-
-      axios({
-        url: baseURL+"/fetch-fab-type-by-id/" + e.target.value,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("login")}`,
-        },
-      }).then((res) => {
-          setType(res.data.type);
-      });
-    }
+    
+    
       
     const onInputChange = (e) => {
 
@@ -186,139 +123,7 @@ const Add = (props) => {
       .then(data => setSupplier(data.supplier)); 
     }, []);
 
-    const [colors, setColors] = useState([]);
-    useEffect(() => {
-      var isLoggedIn = localStorage.getItem("id");
-      if(!isLoggedIn){
-  
-        window.location = "/signin";
-        
-      }else{
-  
-      }
-  
-      var theLoginToken = localStorage.getItem('login');       
-          
-        const requestOptions = {
-              method: 'GET', 
-              headers: {
-                 'Authorization': 'Bearer '+theLoginToken,
-              }             
-        };     
-  
-  
-      fetch(baseURL+'/fetch-color', requestOptions)
-      .then(response => response.json())
-      .then(data => setColors(data.color)); 
-    }, []);
-
-    const [colortheme, setColorTheme] = useState([]);
-    useEffect(() => {
-      var isLoggedIn = localStorage.getItem("id");
-      if(!isLoggedIn){
-  
-        window.location = "/signin";
-        
-      }else{
-  
-      }
-  
-      var theLoginToken = localStorage.getItem('login');       
-          
-        const requestOptions = {
-              method: 'GET', 
-              headers: {
-                 'Authorization': 'Bearer '+theLoginToken,
-              }             
-        };     
-  
-  
-      fetch(baseURL+'/fetch-color-theme', requestOptions)
-      .then(response => response.json())
-      .then(data => setColorTheme(data.colortheme)); 
-    }, []);
-
-    const [types1, setType1] = useState([]);
-    useEffect(() => {
-      var isLoggedIn = localStorage.getItem("id");
-      if(!isLoggedIn){
-  
-        window.location = "/signin";
-        
-      }else{
-  
-      }
-  
-      var theLoginToken = localStorage.getItem('login');       
-          
-        const requestOptions = {
-              method: 'GET', 
-              headers: {
-                 'Authorization': 'Bearer '+theLoginToken,
-              }             
-        };     
-  
-  
-      fetch(baseURL+'/fetch-fab-type', requestOptions)
-      .then(response => response.json())
-      .then(data => setType1(data.type)); 
-    }, []);
-
-    const [occasion, setOccasion] = useState([]);
-    useEffect(() => {
-      var isLoggedIn = localStorage.getItem("id");
-      if(!isLoggedIn){
-  
-        window.location = "/signin";
-        
-      }else{
-  
-      }
-  
-      var theLoginToken = localStorage.getItem('login');       
-          
-        const requestOptions = {
-              method: 'GET', 
-              headers: {
-                 'Authorization': 'Bearer '+theLoginToken,
-              }             
-        };     
-  
-  
-      fetch(baseURL+'/fetch-occasion', requestOptions)
-      .then(response => response.json())
-      .then(data => setOccasion(data.occasion)); 
-    }, []);
-
-    const [designs, setDesigns] = useState([]);
-    useEffect(() => {
-      var isLoggedIn = localStorage.getItem("id");
-      if(!isLoggedIn){
-  
-        window.location = "/signin";
-        
-      }else{
-  
-      }
-  
-      var theLoginToken = localStorage.getItem('login');       
-          
-        const requestOptions = {
-              method: 'GET', 
-              headers: {
-                 'Authorization': 'Bearer '+theLoginToken,
-              }             
-        };     
-  
-  
-      fetch(baseURL+'/fetch-design', requestOptions)
-      .then(response => response.json())
-      .then(data => setDesigns(data.design)); 
-    }, []);
-
-    
-
-    const [width, setWidth] = useState([]);
+   const [width, setWidth] = useState([]);
     useEffect(() => {
       var isLoggedIn = localStorage.getItem("id");
       if(!isLoggedIn){
@@ -372,46 +177,21 @@ const Add = (props) => {
 
     
 
-  const [shrinkage, setShrinkage] = useState([]);
-  useEffect(() => {
-      var isLoggedIn = localStorage.getItem("id");
-      if(!isLoggedIn){
-  
-        window.location = "/signin";
-        
-      }else{
-  
-      }
-  
-      var theLoginToken = localStorage.getItem('login');       
-          
-        const requestOptions = {
-              method: 'GET', 
-              headers: {
-                 'Authorization': 'Bearer '+theLoginToken
-              }             
-        };     
-  
-  
-      fetch(baseURL+'/fetch-shrinkage', requestOptions)
-      .then(response => response.json())
-      .then(data => setShrinkage(data.shrinkage)); 
-    }, []);
+ 
 
     const onSubmit = (e) => {
       
-        let data = {
-          fabric_inward_supplier: fabricinward.fabric_inward_supplier,
-          fabric_inward_lr_no: fabricinward.fabric_inward_lr_no,
-          fabric_inward_lr_date: fabricinward.fabric_inward_lr_date ,
-          fabric_inward_lr_no_bundles: fabricinward.fabric_inward_lr_no_bundles,
-          fabric_inward_remarks: fabricinward.fabric_inward_remarks,
-          fabric_inward_sub_data: users,
-          fabric_inward_count:fabric_inward_count,
-          fabric_inward_width:fabricinward.fabric_inward_width,
-          fabric_inward_invoice:fabricinward.fabric_inward_invoice,
-          fabric_inward_brand:fabricinward.fabric_inward_brand,
-        };
+        const data = new FormData();
+        data.append("fabric_inward_supplier",fabricinward.fabric_inward_supplier);
+        data.append("fabric_inward_lr_no",fabricinward.fabric_inward_lr_no);
+        data.append("fabric_inward_lr_date",fabricinward.fabric_inward_lr_date);
+        data.append("fabric_inward_lr_no_bundles",fabricinward.fabric_inward_lr_no_bundles);
+        data.append("fabric_inward_remarks",fabricinward.fabric_inward_remarks);
+        data.append("fabric_inward_count",fabric_inward_count);
+        data.append("fabric_inward_width",fabricinward.fabric_inward_width);
+        data.append("fabric_inward_invoice",fabricinward.fabric_inward_invoice);
+        data.append("fabric_inward_brand",fabricinward.fabric_inward_brand);
+        data.append("uploaded_file",selectedFile);
 
         var url = new URL(window.location.href);
         var id = url.searchParams.get("id");
@@ -423,7 +203,7 @@ const Add = (props) => {
         if (v) {
         setIsButtonDisabled(true)
         axios({
-            url: baseURL+"/create-fabric-inward",
+            url: baseURL+"/create-fabric-inward-files",
             method: "POST",
             data,
             headers: {
@@ -585,215 +365,26 @@ const Add = (props) => {
                 />
               </div>
             </div>
-            </div>
-            <hr/>
-            {
-              users.map((user, index)=> (
-                <div className="row" key={index}>
-                <div className="col-sm-12 col-md-12 col-xl-1">
-                <div className="form-group">
-                  <TextField
-                    fullWidth
-                    InputLabelProps={{style: {fontSize: 12},shrink: !!user.fabric_inward_sub_name}}
-                    label="P Code"
-                    autoComplete="Name"
-                    name="fabric_inward_sub_name"
-                    value={user.fabric_inward_sub_name}
-                    onChange={e => onChange(e, index)}
-                    onClick={() => {
-                      setActiveProductIndex(index)
-                      openmodal();
-                    }}
-                    />
-                    
-                </div>
-                </div>
-                <div className="col-sm-12 col-md-12 col-xl-1">
-                  <div className="form-group">
+            <div className="col-sm-12 col-md-12 col-xl-6">
+              <div className="form-group">
                 <TextField
                   fullWidth
-                  label="Length"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  autoComplete="Name"
+                  type="file"
+                  label="Ratio File"
                   required
-                  name="fabric_inward_sub_length"
-                  value={user.fabric_inward_sub_length}
-                  onChange={e => onChange(e, index)}
-                />
-                </div>
-                </div>
-              <div className="col-sm-12 col-md-12 col-xl-1">
-              <div className="form-group">
-              <TextField
-                  id="select-corrpreffer"
-                  select
-                  label="Color"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  SelectProps={{
-                      MenuProps: {},
-                  }}
-                  name="fabric_inward_sub_color"
-                  value={user.fabric_inward_sub_color}
-                  onChange={e => onChange(e, index)}
-                  fullWidth
-                  >
-                    {colors.map((color, key) => (
-                  <MenuItem key={key} value={color.attr_colour_name}>
-                    {color.attr_colour_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              
-              </div>
-              </div>
-              <div className="col-sm-12 col-md-12 col-xl-2">
-              <div className="form-group">
-              <TextField
-                  id="select-corrpreffer"
-                  select
-                  label="Design"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  SelectProps={{
-                      MenuProps: {},
-                  }}
-                  name="fabric_inward_sub_design"
-                  value={user.fabric_inward_sub_design}
-                  onChange={(e) => {
-                    onChange(e, index),
-                    setActiveDesignIndex(e, index)
-                  }}
-                  fullWidth
-                  >
-                    {designs.map((design, key) => (
-                  <MenuItem key={key} value={design.attr_design_name}>
-                    {design.attr_design_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              
-              </div>
-              </div>
-              <div className="col-sm-12 col-md-12 col-xl-2">
-              <div className="form-group">
-              <TextField
-                  id="select-corrpreffer"
-                  select
-                  label="Type"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  SelectProps={{
-                      MenuProps: {},
-                  }}
-                  name="fabric_inward_sub_type"
-                  value={user.fabric_inward_sub_type}
-                  onChange={e => onChange(e, index)}
-                  fullWidth
-                  >
-                    {types.map((design, key) => (
-                  <MenuItem key={key} value={design.attr_fabric_type_name}>
-                    {design.attr_fabric_type_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              {user.fabric_inward_sub_type}
-              </div>
-              </div>
-              <div className="col-sm-12 col-md-12 col-xl-1">
-              <div className="form-group">
-              <TextField
-                  id="select-corrpreffer"
-                  select
-                  label="Theme"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  SelectProps={{
-                      MenuProps: {},
-                  }}
-                  name="fabric_inward_sub_color_theme"
-                  value={user.fabric_inward_sub_color_theme}
-                  onChange={e => onChange(e, index)}
-                  fullWidth
-                  >
-                    {colortheme.map((colortheme, key) => (
-                  <MenuItem key={colortheme.attr_colour_theme_name} value={colortheme.attr_colour_theme_name}>
-                    {colortheme.attr_colour_theme_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              
-              </div>
-              </div>
-              <div className="col-sm-12 col-md-12 col-xl-1">
-              <div className="form-group">
-              <TextField
-                  id="select-corrpreffer"
-                  select
-                  label="Occasion"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  SelectProps={{
-                      MenuProps: {},
-                  }}
-                  name="fabric_inward_sub_occasion"
-                  value={user.fabric_inward_sub_occasion}
-                  onChange={e => onChange(e, index)}
-                  fullWidth
-                  >
-                    {occasion.map((occasion, key) => (
-                  <MenuItem key={key} value={occasion.occasion_name}>
-                    {occasion.occasion_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              
-              </div>
-              </div>
-              <div className="col-sm-12 col-md-12 col-xl-1">
-                <div className="form-group">
-                  <TextField
-                    fullWidth
-                    SelectProps={{
-                      MenuProps: {},
-                    }}
-                  select
-                    label="Shrinkage"
-                    InputLabelProps={{style: {fontSize: 12}}}
-                    autoComplete="Name"
-                    name="fabric_inward_sub_shrinkage"
-                    value={user.fabric_inward_sub_shrinkage}
-                    onChange={e => onChange(e, index)}
-                  >
-                    {shrinkage.map((fabric, key) => (
-                      <MenuItem key={key} value={fabric.shrinkage_length+"x"+fabric.shrinkage_width}>
-                          {fabric.shrinkage_length}{"x"}{fabric.shrinkage_width}
-                      </MenuItem>
-                    ))}    
-                  </TextField>
-                </div>
-                </div>
-                
-                <div className="col-sm-12 col-md-12 col-xl-1">
-                  <div className="form-group">
-                <TextField
-                  fullWidth
-                  label="Rate"
                   autoComplete="Name"
-                  InputLabelProps={{style: {fontSize: 12}}}
-                  name="fabric_inward_sub_rate"
-                  value={user.fabric_inward_sub_rate}
-                  onChange={e => onChange(e, index)}
+                  name="uploaded_file"
+                  onChange={(e) => setSelectedFile(e.target.files[0])}
                 />
-                </div>
               </div>
-              <div className="col-sm-12 col-md-12 col-xl-1">
-                          <IconButton onClick={() => removeUser(index)}>
-                          <DeleteIcon/>
-                          </IconButton>
+            </div>
+            <div className="col-sm-12 col-md-12 col-xl-6">
+              <div className="form-group">
+                <span> Download a Sample Format of Excel </span>
+                <Button className="mr-10 mb-10" color="primary"> 
+                    <a style={{color:'white'}} href="https://houseofonzone.com/admin/storage/app/public/File/Fabric_Format.xlsx" download="Fabric_Format.xlsx">Download</a>
+                </Button>
               </div>
-              </div>
-              ))
-            }
-            <div className="row mt-4">
-              <div className="col-sm-12 col-md-12 col-xl-12">
-                <Button className="mr-10 mb-10" color="primary" style={{width:"100px"}} variant="contained" onClick={(e) => addItem(e)}>
-                  Add More</Button>
               </div>
             </div>
             <div className="row mt-4">
@@ -820,13 +411,7 @@ const Add = (props) => {
           <div className="antifloat"></div>
         </form>
       </RctCollapsibleCard>
-      <Modal isOpen={showmodal} toggle={() => closegroupModal()} size="lg" style={{maxWidth: '705px', width: '100%'}}>
-        <ModalHeader toggle={() => closegroupModal()}>Select P Code</ModalHeader>
-        <ModalBody>
-          <Selectdonor populateCoreName={populateCoreName}/>
-        </ModalBody>
-        <ModalFooter></ModalFooter>
-      </Modal>
+      
     </div>
   );
 };
