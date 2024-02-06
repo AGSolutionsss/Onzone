@@ -83,7 +83,7 @@ class Sidebar extends Component {
 							
 							<Link to="/app/dashboard/news" className="logo-mini">
 								{/* <img src={require('Assets/receipt/fts1.png')} className="mr-15" alt="site logo" width="80" height="35" /> */}
-								<p style={{color:"white",fontSize:"12px",fontWeight:"700"}}>Updated On : Feb 05th, 2024</p>
+								<p style={{color:"white",fontSize:"12px",fontWeight:"700"}}>Updated On : Feb 06th, 2024</p>
 							</Link>
 						</div>
 					</div>
